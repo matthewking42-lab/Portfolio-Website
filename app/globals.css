@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+/* ─── Custom theme (Tailwind v4 @theme) ─────────────────────────────────── */
+@theme {
+  /* Accent green palette */
+  --color-accent:        #16a34a;
+  --color-accent-light:  #f0fdf4;
+  --color-accent-border: #bbf7d0;
+  --color-accent-hover:  #15803d;
+  --color-accent-muted:  #dcfce7;
+
+  /* Fonts */
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background: #ffffff;
+  color: #111827;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ─── Cards ──────────────────────────────────────────────────────────────── */
+.card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.card-hover {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.card-hover:hover {
+  border-color: #bbf7d0;
+  box-shadow: 0 1px 8px rgba(22, 163, 74, 0.08);
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-block;
+  background: #16a34a;
+  color: #ffffff;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.8125rem;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1.75rem;
+  transition: background 0.15s;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: #15803d;
+}
+
+.btn-secondary {
+  display: inline-block;
+  background: transparent;
+  color: #374151;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.8125rem;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1.75rem;
+  border: 1px solid #d1d5db;
+  transition: border-color 0.15s, color 0.15s;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-secondary:hover {
+  border-color: #6b7280;
+  color: #111827;
+}
+
+/* ─── Sector badges ──────────────────────────────────────────────────────── */
+.badge-rail {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.badge-mining {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.badge-environment {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+/* ─── Leaflet popup overrides ────────────────────────────────────────────── */
+.leaflet-popup-content-wrapper {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+}
+
+.leaflet-popup-tip-container {
+  display: none;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #f9fafb; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }

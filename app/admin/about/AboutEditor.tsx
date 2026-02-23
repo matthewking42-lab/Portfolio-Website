@@ -91,14 +91,14 @@ export default function AboutEditor({ initial }: { initial: AboutContent }) {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="font-mono text-sm font-medium text-gray-900">About Page</span>
+            <span className="font-mono text-sm font-medium text-gray-900">Career Page</span>
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent" />
           </div>
           <p className="text-gray-400 text-xs font-mono">Edit bio, skills and career timeline</p>
         </div>
         <div className="flex items-center gap-3">
           <a
-            href="/about"
+            href="/career"
             target="_blank"
             className="font-mono text-xs text-gray-400 hover:text-gray-700 transition-colors"
           >

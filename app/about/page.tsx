@@ -1,29 +1,6 @@
 import Link from 'next/link'
-import { prisma } from '@/lib/prisma'
-import { DEFAULT_ABOUT } from '@/lib/about-defaults'
-import type { AboutContent } from '@/lib/about-defaults'
 
-export const dynamic = 'force-dynamic'
-
-async function getAbout(): Promise<AboutContent> {
-  try {
-    const record = await prisma.siteContent.findUnique({ where: { key: 'about' } })
-    if (record) return JSON.parse(record.value) as AboutContent
-  } catch {
-    // DB not yet migrated or key not set — fall through to defaults
-  }
-  return DEFAULT_ABOUT
-}
-
-function sectorBadgeColor(sector: string) {
-  if (sector === 'Rail') return 'badge-rail'
-  if (sector.includes('Mining') || sector.includes('Industrial')) return 'badge-mining'
-  return 'badge-environment'
-}
-
-export default async function AboutPage() {
-  const about = await getAbout()
-
+export default function AboutPage() {
   return (
     <main className="min-h-screen bg-white pt-14">
       {/* Header */}
@@ -31,7 +8,7 @@ export default async function AboutPage() {
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-12">
           <div className="flex items-center gap-3 mb-3">
             <span className="block w-5 h-px bg-accent" />
-            <span className="font-mono text-accent text-xs tracking-[0.18em] uppercase">Profile</span>
+            <span className="font-mono text-accent text-xs tracking-[0.18em] uppercase">Personal</span>
           </div>
           <h1 className="font-mono text-4xl md:text-5xl text-gray-900 font-light">About</h1>
         </div>
@@ -40,22 +17,36 @@ export default async function AboutPage() {
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
 
-          {/* Left — bio */}
-          <div className="lg:col-span-3 space-y-6">
-            <div className="flex items-center gap-4 mb-2">
+          {/* Left — intro */}
+          <div className="lg:col-span-3 space-y-8">
+            <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-full bg-accent-light border border-accent-border flex items-center justify-center flex-shrink-0">
                 <span className="font-mono text-accent font-medium text-lg">MK</span>
               </div>
               <div>
                 <div className="font-mono text-gray-900 font-medium">Matthew King</div>
-                <div className="text-gray-500 text-sm">Civil &amp; Structural Design Engineer</div>
+                <div className="text-gray-500 text-sm">Senior Civil &amp; Structural Design Engineer</div>
               </div>
             </div>
 
             <div className="space-y-4 text-gray-600 leading-relaxed text-[15px]">
-              {about.bioParagraphs.map((para, i) => (
-                <p key={i}>{para}</p>
-              ))}
+              <p>
+                I am a Senior Civil and Structural Design Engineer based in the UK, specialising
+                in railway bridge infrastructure. Outside of engineering, I am driven by a broader
+                interest in how organisations work — how teams collaborate, how processes can be
+                improved, and how technology can be applied to real-world problems.
+              </p>
+              <p>
+                This curiosity has led me to take on projects beyond my core engineering role —
+                from building internal tools that improve team efficiency, to developing business
+                plans and leading the adoption of new technology across the organisation.
+              </p>
+              <p>
+                I am always looking for ways to contribute beyond the job description, whether
+                that is through mentoring junior colleagues, improving how the team manages
+                knowledge, or exploring how emerging tools like AI can be applied responsibly
+                in a professional engineering context.
+              </p>
             </div>
 
             {/* LinkedIn */}
@@ -78,55 +69,60 @@ export default async function AboutPage() {
             </div>
           </div>
 
-          {/* Right — skills + timeline */}
-          <div className="lg:col-span-2 space-y-10">
-            {/* Skills */}
+          {/* Right — quick facts */}
+          <div className="lg:col-span-2 space-y-8">
             <div>
-              <h2 className="font-mono text-xs text-gray-400 uppercase tracking-widest mb-4">
-                Technical Skills
+              <h2 className="font-mono text-xs text-gray-400 uppercase tracking-widest mb-5">
+                At a Glance
               </h2>
-              <div className="flex flex-wrap gap-2">
-                {about.skills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="font-mono text-xs px-3 py-1.5 bg-gray-50 border border-gray-200 text-gray-600 hover:border-accent-border hover:bg-accent-light hover:text-accent transition-all cursor-default"
-                  >
-                    {skill}
-                  </span>
+              <div className="space-y-4">
+                {[
+                  { label: 'Based in', value: 'United Kingdom' },
+                  { label: 'Employer', value: 'AmcoGiffen' },
+                  { label: 'Specialisation', value: 'Railway Bridge Design' },
+                  { label: 'Chartered status', value: 'Working towards CEng' },
+                  { label: 'Career start', value: 'March 2018' },
+                ].map(({ label, value }) => (
+                  <div key={label} className="flex items-start justify-between border-b border-gray-50 pb-3">
+                    <span className="font-mono text-xs text-gray-400 uppercase tracking-widest">{label}</span>
+                    <span className="font-mono text-xs text-gray-700 text-right">{value}</span>
+                  </div>
                 ))}
               </div>
             </div>
 
-            {/* Career timeline */}
             <div>
-              <h2 className="font-mono text-xs text-gray-400 uppercase tracking-widest mb-6">
-                Career
+              <h2 className="font-mono text-xs text-gray-400 uppercase tracking-widest mb-5">
+                Interests
               </h2>
-              {about.timeline.map((item, i) => (
-                <div key={i} className="flex gap-4">
-                  <div className="flex flex-col items-center">
-                    <div className="w-2.5 h-2.5 rounded-full bg-accent flex-shrink-0 mt-1.5 ring-4 ring-green-50" />
-                    {i < about.timeline.length - 1 && (
-                      <div className="w-px flex-1 bg-gray-200 mt-1" />
-                    )}
-                  </div>
-                  <div className="pb-6">
-                    <div className="font-mono text-[11px] text-accent tracking-wide uppercase mb-0.5">
-                      {item.date}
-                    </div>
-                    <div className="font-mono text-gray-900 text-sm font-medium">{item.role}</div>
-                    <div className="text-gray-400 text-xs mb-2">{item.company}</div>
-                    <p className="text-gray-600 text-sm leading-relaxed">{item.description}</p>
-                  </div>
-                </div>
-              ))}
+              <div className="flex flex-wrap gap-2">
+                {[
+                  'Structural Engineering',
+                  'Process Improvement',
+                  'AI & Technology',
+                  'Business Development',
+                  'Mentoring',
+                  'Surveying',
+                  'Laser Scanning',
+                ].map((interest) => (
+                  <span
+                    key={interest}
+                    className="font-mono text-xs px-3 py-1.5 bg-gray-50 border border-gray-200 text-gray-600 hover:border-accent-border hover:bg-accent-light hover:text-accent transition-all cursor-default"
+                  >
+                    {interest}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="pt-8 border-t border-gray-100">
-          <Link href="/projects" className="btn-primary">
-            View Projects Map →
+        <div className="pt-8 border-t border-gray-100 flex gap-3 flex-wrap">
+          <Link href="/career" className="btn-primary">
+            View Career →
+          </Link>
+          <Link href="/initiatives" className="btn-secondary">
+            Initiatives →
           </Link>
         </div>
       </div>

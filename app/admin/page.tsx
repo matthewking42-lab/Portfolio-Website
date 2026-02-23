@@ -36,7 +36,7 @@ export default async function AdminPage() {
               href="/admin/about"
               className="font-mono text-xs px-4 py-2 border border-gray-200 text-gray-500 hover:border-accent hover:text-accent transition-all"
             >
-              Edit About
+              Edit Career
             </Link>
             <AdminImportButton />
             <Link href="/admin/projects/new" className="btn-primary text-xs">

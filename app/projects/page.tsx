@@ -156,7 +156,8 @@ export default function ProjectsPage() {
         {!sidebarOpen && (
           <button
             onClick={() => setSidebarOpen(true)}
-            className="absolute top-3 left-3 z-10 bg-white border border-gray-200 px-3 py-1.5 text-xs font-mono text-gray-600 hover:border-accent hover:text-accent transition-all shadow-sm flex items-center gap-1.5"
+            className="absolute top-3 left-3 bg-white border border-gray-200 px-3 py-1.5 text-xs font-mono text-gray-600 hover:border-accent hover:text-accent transition-all shadow-sm flex items-center gap-1.5"
+            style={{ zIndex: 1000 }}
           >
             <svg width="13" height="10" viewBox="0 0 13 10" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect y="0" width="13" height="1.5" rx="0.75" fill="currentColor"/>

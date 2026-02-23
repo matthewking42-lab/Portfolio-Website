@@ -1,11 +1,14 @@
-import Link from 'next/link'
-import { prisma } from '@/lib/prisma'
-import AdminProjectRow from './AdminProjectRow'
+import Link from "next/link";
+import { prisma } from "@/lib/prisma";
+import AdminProjectRow from "./AdminProjectRow";
+
+// Force dynamic rendering to avoid build-time DB queries (required for Netlify deploy)
+export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
   const projects = await prisma.project.findMany({
-    orderBy: { createdAt: 'desc' },
-  })
+    orderBy: { createdAt: "desc" },
+  });
 
   return (
     <main className="min-h-screen bg-gray-50 p-6">
@@ -14,7 +17,9 @@ export default async function AdminPage() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="font-mono text-sm font-medium text-gray-900">Matthew King</span>
+              <span className="font-mono text-sm font-medium text-gray-900">
+                Matthew King
+              </span>
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent" />
             </div>
             <p className="text-gray-400 text-xs font-mono">Admin Dashboard</p>
@@ -26,10 +31,7 @@ export default async function AdminPage() {
             >
               ← Public Site
             </Link>
-            <Link
-              href="/admin/projects/new"
-              className="btn-primary text-xs"
-            >
+            <Link href="/admin/projects/new" className="btn-primary text-xs">
               + Add Project
             </Link>
             <form action="/api/auth/logout" method="POST">
@@ -46,13 +48,23 @@ export default async function AdminPage() {
         {/* Stat cards */}
         <div className="grid grid-cols-3 gap-4 mb-6">
           {[
-            { value: projects.length, label: 'Total' },
-            { value: projects.filter((p) => p.published).length, label: 'Published' },
-            { value: projects.filter((p) => p.isOngoing).length, label: 'Ongoing' },
+            { value: projects.length, label: "Total" },
+            {
+              value: projects.filter((p) => p.published).length,
+              label: "Published",
+            },
+            {
+              value: projects.filter((p) => p.isOngoing).length,
+              label: "Ongoing",
+            },
           ].map(({ value, label }) => (
             <div key={label} className="bg-white border border-gray-200 p-5">
-              <div className="font-mono text-3xl text-accent font-light">{value}</div>
-              <div className="font-mono text-xs text-gray-400 uppercase tracking-widest mt-1">{label}</div>
+              <div className="font-mono text-3xl text-accent font-light">
+                {value}
+              </div>
+              <div className="font-mono text-xs text-gray-400 uppercase tracking-widest mt-1">
+                {label}
+              </div>
             </div>
           ))}
         </div>
@@ -63,10 +75,17 @@ export default async function AdminPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-100 bg-gray-50">
-                  {['Title', 'Sector', 'Location', 'Period', 'Published', 'Actions'].map((h, i) => (
+                  {[
+                    "Title",
+                    "Sector",
+                    "Location",
+                    "Period",
+                    "Published",
+                    "Actions",
+                  ].map((h, i) => (
                     <th
                       key={h}
-                      className={`px-4 py-3 font-mono text-xs text-gray-400 uppercase tracking-widest font-normal ${i >= 4 ? 'text-center' : 'text-left'} ${i === 5 ? 'text-right' : ''}`}
+                      className={`px-4 py-3 font-mono text-xs text-gray-400 uppercase tracking-widest font-normal ${i >= 4 ? "text-center" : "text-left"} ${i === 5 ? "text-right" : ""}`}
                     >
                       {h}
                     </th>
@@ -83,5 +102,5 @@ export default async function AdminPage() {
         </div>
       </div>
     </main>
-  )
+  );
 }

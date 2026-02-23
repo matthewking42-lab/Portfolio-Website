@@ -133,7 +133,7 @@ export default function HeroMap() {
 
       {/* Project info label — only rendered when landed on a project */}
       {info && (
-        <div className="absolute bottom-0 left-0 right-0 bg-white/95 border-t border-gray-100 px-4 py-3 pointer-events-none">
+        <div className="absolute bottom-0 left-0 right-0 bg-white/95 border-t border-gray-100 px-4 py-3 pointer-events-none" style={{ zIndex: 1000 }}>
           <span className="font-mono text-[9px] text-accent tracking-widest uppercase">
             {info.sector}
           </span>

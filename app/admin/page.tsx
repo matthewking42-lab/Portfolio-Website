@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import AdminProjectRow from "./AdminProjectRow";
+import AdminImportButton from "./AdminImportButton";
 
 // Force dynamic rendering to avoid build-time DB queries (required for Netlify deploy)
 export const dynamic = "force-dynamic";
@@ -31,6 +32,7 @@ export default async function AdminPage() {
             >
               ← Public Site
             </Link>
+            <AdminImportButton />
             <Link href="/admin/projects/new" className="btn-primary text-xs">
               + Add Project
             </Link>

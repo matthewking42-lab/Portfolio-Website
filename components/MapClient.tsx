@@ -145,8 +145,9 @@ export default function MapClient({ projects, selectedSectors, focusId }: MapCli
       const map = L.map(containerRef.current!, {
         center: [54.5, -2.5],
         zoom: 6,
-        zoomControl: true,
+        zoomControl: false,
       })
+      L.control.zoom({ position: 'topright' }).addTo(map)
       mapRef.current = map
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

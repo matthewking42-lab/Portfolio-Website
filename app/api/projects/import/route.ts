@@ -62,7 +62,8 @@ export async function POST(request: NextRequest) {
   let count = 0
   const errors: string[] = []
 
-  for (const [i, row] of rows.entries()) {
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i]
     const rowNum = i + 2 // +2 because row 1 = headers, arrays are 0-indexed
     const lat = parseFloat(row['latitude'] ?? '')
     const lng = parseFloat(row['longitude'] ?? '')

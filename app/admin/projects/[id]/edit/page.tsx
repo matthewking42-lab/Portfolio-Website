@@ -27,6 +27,7 @@ export default async function EditProjectPage({ params }: { params: { id: string
     isOngoing: project.isOngoing,
     published: project.published,
     pdfReport: project.pdfReport,
+    skills: project.skills,
   }
 
   return (

@@ -47,6 +47,7 @@ export async function PUT(
       isOngoing: Boolean(body.isOngoing),
       pdfReport: body.pdfReport ?? undefined,
       published: Boolean(body.published),
+      skills: Array.isArray(body.skills) ? body.skills : [],
     },
   })
 

@@ -4,9 +4,9 @@ import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 const TEMPLATE_HEADERS =
-  'title,reference,sector,client,contractValue,designFee,contract,description,role,latitude,longitude,location,startDate,endDate,isOngoing,published'
+  'title,reference,sector,client,contractValue,designFee,contract,description,role,latitude,longitude,location,startDate,endDate,isOngoing,published,skills'
 const TEMPLATE_EXAMPLE =
-  '"Example Bridge","REF-001","Rail","Network Rail","£500,000","£25,000","NR4(MT)","Project description.","Design Engineer",51.5074,-0.1278,"London","Jan 2024","Dec 2024","false","true"'
+  '"Example Bridge","REF-001","Rail","Network Rail","£500,000","£25,000","NR4(MT)","Project description.","Design Engineer",51.5074,-0.1278,"London","Jan 2024","Dec 2024","false","true","Bridge Design|Eurocodes|AutoCAD"'
 
 function downloadTemplate() {
   const csv = TEMPLATE_HEADERS + '\n' + TEMPLATE_EXAMPLE
@@ -120,6 +120,9 @@ export default function AdminImportButton() {
                 </div>
                 <p className="text-[11px] text-gray-400 mt-2">
                   Sector must be one of: <span className="font-mono">Rail</span>, <span className="font-mono">Industrial/Mining</span>, <span className="font-mono">Environment</span>
+                </p>
+                <p className="text-[11px] text-gray-400 mt-1">
+                  <span className="font-mono">skills</span> column is optional — use pipe-separated values, e.g. <span className="font-mono">Bridge Design|Eurocodes</span>
                 </p>
               </div>
 

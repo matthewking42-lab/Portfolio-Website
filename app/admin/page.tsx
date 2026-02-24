@@ -25,31 +25,50 @@ export default async function AdminPage() {
             </div>
             <p className="text-gray-400 text-xs font-mono">Admin Dashboard</p>
           </div>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="font-mono text-xs text-gray-400 hover:text-gray-700 transition-colors"
-            >
-              ← Public Site
-            </Link>
-            <Link
-              href="/admin/about"
-              className="font-mono text-xs px-4 py-2 border border-gray-200 text-gray-500 hover:border-accent hover:text-accent transition-all"
-            >
-              Edit Career
-            </Link>
-            <AdminImportButton />
-            <Link href="/admin/projects/new" className="btn-primary text-xs">
-              + Add Project
-            </Link>
-            <form action="/api/auth/logout" method="POST">
-              <button
-                type="submit"
-                className="font-mono text-xs px-4 py-2 border border-gray-200 text-gray-400 hover:border-red-200 hover:text-red-500 transition-all"
+          <div className="flex flex-col items-end gap-2">
+            {/* Primary actions */}
+            <div className="flex items-center gap-3">
+              <Link
+                href="/"
+                className="font-mono text-xs text-gray-400 hover:text-gray-700 transition-colors"
               >
-                Logout
-              </button>
-            </form>
+                ← Public Site
+              </Link>
+              <AdminImportButton />
+              <Link href="/admin/projects/new" className="btn-primary text-xs">
+                + Add Project
+              </Link>
+              <form action="/api/auth/logout" method="POST">
+                <button
+                  type="submit"
+                  className="font-mono text-xs px-4 py-2 border border-gray-200 text-gray-400 hover:border-red-200 hover:text-red-500 transition-all"
+                >
+                  Logout
+                </button>
+              </form>
+            </div>
+            {/* Page editors */}
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[10px] text-gray-300 uppercase tracking-widest">Edit pages:</span>
+              <Link
+                href="/admin/about-page"
+                className="font-mono text-xs px-3 py-1 border border-gray-200 text-gray-500 hover:border-accent hover:text-accent transition-all"
+              >
+                About
+              </Link>
+              <Link
+                href="/admin/about"
+                className="font-mono text-xs px-3 py-1 border border-gray-200 text-gray-500 hover:border-accent hover:text-accent transition-all"
+              >
+                Career
+              </Link>
+              <Link
+                href="/admin/initiatives"
+                className="font-mono text-xs px-3 py-1 border border-gray-200 text-gray-500 hover:border-accent hover:text-accent transition-all"
+              >
+                Initiatives
+              </Link>
+            </div>
           </div>
         </div>
 

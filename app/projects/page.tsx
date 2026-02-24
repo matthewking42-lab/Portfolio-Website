@@ -20,17 +20,23 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true)
   const [focusId, setFocusId] = useState<string | undefined>()
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [skillFilter, setSkillFilter] = useState<string | null>(null)
 
   // On mobile, start with sidebar closed so the map is visible
   useEffect(() => {
     if (window.innerWidth < 768) setSidebarOpen(false)
   }, [])
 
-  // Read ?focus=<id> from the URL (set when navigating from the hero map)
+  // Read ?focus=<id> and ?skill=<name> from the URL
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const id = params.get('focus')
     if (id) setFocusId(id)
+    const skill = params.get('skill')
+    if (skill) {
+      setSkillFilter(skill)
+      setSidebarOpen(true) // open sidebar so the filter chip is visible
+    }
   }, [])
 
   useEffect(() => {
@@ -46,7 +52,11 @@ export default function ProjectsPage() {
     )
   }
 
-  const visibleCount = projects.filter((p) => selectedSectors.includes(p.sector)).length
+  const visibleProjects = projects.filter(
+    (p) =>
+      selectedSectors.includes(p.sector) &&
+      (!skillFilter || p.skills.includes(skillFilter))
+  )
 
   return (
     <div className="relative flex h-screen pt-14 bg-white overflow-hidden">
@@ -78,7 +88,7 @@ export default function ProjectsPage() {
                 Projects Map
               </div>
               <div className="text-gray-400 text-xs">
-                {loading ? 'Loading…' : `${visibleCount} of ${projects.length} shown`}
+                {loading ? 'Loading…' : `${visibleProjects.length} of ${projects.length} shown`}
               </div>
             </div>
             <button
@@ -90,6 +100,27 @@ export default function ProjectsPage() {
             </button>
           </div>
 
+          {/* Active skill filter chip */}
+          {skillFilter && (
+            <div className="px-5 py-3 border-b border-gray-100 bg-accent-light">
+              <div className="font-mono text-[10px] text-gray-400 uppercase tracking-widest mb-1.5">
+                Skill filter
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xs text-accent border border-accent-border bg-white px-2 py-0.5 flex items-center gap-1.5">
+                  {skillFilter}
+                </span>
+                <button
+                  onClick={() => setSkillFilter(null)}
+                  className="font-mono text-[10px] text-gray-400 hover:text-gray-700 transition-colors"
+                  title="Clear skill filter"
+                >
+                  ✕ clear
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Sector filters */}
           <div className="px-5 py-4 border-b border-gray-100">
             <div className="font-mono text-xs text-gray-400 uppercase tracking-widest mb-3">
@@ -97,7 +128,9 @@ export default function ProjectsPage() {
             </div>
             <div className="space-y-1.5">
               {ALL_SECTORS.map((sector) => {
-                const count = projects.filter((p) => p.sector === sector).length
+                const count = projects.filter(
+                  (p) => p.sector === sector && (!skillFilter || p.skills.includes(skillFilter))
+                ).length
                 const active = selectedSectors.includes(sector)
                 return (
                   <button
@@ -125,23 +158,26 @@ export default function ProjectsPage() {
               </div>
             ) : (
               <div>
-                {projects
-                  .filter((p) => selectedSectors.includes(p.sector))
-                  .map((project) => (
-                    <a
-                      key={project.id}
-                      href={`/projects/${project.id}`}
-                      className="block px-5 py-3.5 border-b border-gray-50 hover:bg-green-50 transition-colors group"
-                    >
-                      <div className={`inline-block font-mono text-[10px] px-2 py-0.5 mb-1.5 ${sectorBadgeClass(project.sector)}`}>
-                        {project.sector}
-                      </div>
-                      <div className="text-gray-800 text-xs font-medium leading-snug group-hover:text-accent transition-colors">
-                        {project.title}
-                      </div>
-                      <div className="text-gray-400 text-xs mt-0.5">{project.location}</div>
-                    </a>
-                  ))}
+                {visibleProjects.map((project) => (
+                  <a
+                    key={project.id}
+                    href={`/projects/${project.id}`}
+                    className="block px-5 py-3.5 border-b border-gray-50 hover:bg-green-50 transition-colors group"
+                  >
+                    <div className={`inline-block font-mono text-[10px] px-2 py-0.5 mb-1.5 ${sectorBadgeClass(project.sector)}`}>
+                      {project.sector}
+                    </div>
+                    <div className="text-gray-800 text-xs font-medium leading-snug group-hover:text-accent transition-colors">
+                      {project.title}
+                    </div>
+                    <div className="text-gray-400 text-xs mt-0.5">{project.location}</div>
+                  </a>
+                ))}
+                {visibleProjects.length === 0 && !loading && (
+                  <div className="px-5 py-8 text-center">
+                    <div className="text-gray-400 text-xs">No projects match the current filters.</div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -165,6 +201,9 @@ export default function ProjectsPage() {
               <rect y="8" width="7" height="1.5" rx="0.75" fill="currentColor"/>
             </svg>
             Filters
+            {skillFilter && (
+              <span className="w-1.5 h-1.5 rounded-full bg-accent ml-0.5" />
+            )}
           </button>
         )}
 
@@ -173,6 +212,7 @@ export default function ProjectsPage() {
             projects={projects}
             selectedSectors={selectedSectors}
             focusId={focusId}
+            skillFilter={skillFilter}
           />
         )}
         {loading && (

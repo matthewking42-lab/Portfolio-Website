@@ -14,12 +14,14 @@ export interface MapProject {
   startDate: string
   endDate: string | null
   isOngoing: boolean
+  skills: string[]
 }
 
 interface MapClientProps {
   projects: MapProject[]
   selectedSectors: string[]
   focusId?: string
+  skillFilter?: string | null
 }
 
 // Amber pin — stands out clearly against OSM tiles
@@ -55,7 +57,7 @@ function popupHtml(project: MapProject): string {
     </div>`
 }
 
-export default function MapClient({ projects, selectedSectors, focusId }: MapClientProps) {
+export default function MapClient({ projects, selectedSectors, focusId, skillFilter }: MapClientProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
   const markersRef = useRef<any[]>([])
@@ -74,7 +76,7 @@ export default function MapClient({ projects, selectedSectors, focusId }: MapCli
     markerMapRef.current = {}
 
     projects
-      .filter((p) => selectedSectors.includes(p.sector))
+      .filter((p) => selectedSectors.includes(p.sector) && (!skillFilter || p.skills.includes(skillFilter)))
       .forEach((project) => {
         const icon = L.divIcon({
           className: '',
@@ -91,7 +93,7 @@ export default function MapClient({ projects, selectedSectors, focusId }: MapCli
         markerMapRef.current[project.id] = marker
       })
 
-    const visible = projects.filter((p) => selectedSectors.includes(p.sector))
+    const visible = projects.filter((p) => selectedSectors.includes(p.sector) && (!skillFilter || p.skills.includes(skillFilter)))
 
     // One-time focus when arriving from hero map click
     if (focusId && !hasFocusedRef.current && markerMapRef.current[focusId]) {
@@ -133,7 +135,7 @@ export default function MapClient({ projects, selectedSectors, focusId }: MapCli
         mapRef.current.flyToBounds(bounds, { padding: [60, 60], maxZoom: 12, duration: 0.8 })
       }
     }
-  }, [projects, selectedSectors, focusId])
+  }, [projects, selectedSectors, focusId, skillFilter])
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return

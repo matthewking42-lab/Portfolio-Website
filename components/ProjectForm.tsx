@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 const AdminMapPicker = dynamic(() => import('./AdminMapPicker'), { ssr: false })
@@ -25,6 +25,7 @@ export interface ProjectFormData {
   isOngoing: boolean
   published: boolean
   pdfReport?: string | null
+  skills: string[]
 }
 
 const defaultForm: ProjectFormData = {
@@ -44,6 +45,7 @@ const defaultForm: ProjectFormData = {
   endDate: '',
   isOngoing: false,
   published: true,
+  skills: [],
 }
 
 const inputCls =
@@ -75,10 +77,27 @@ export default function ProjectForm({ initial, mode }: { initial?: Partial<Proje
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [uploadProgress, setUploadProgress] = useState('')
+  const [availableSkills, setAvailableSkills] = useState<string[]>([])
   const fileRef = useRef<HTMLInputElement>(null)
 
-  function set(field: keyof ProjectFormData, value: string | boolean) {
+  useEffect(() => {
+    fetch('/api/admin/about')
+      .then((r) => r.json())
+      .then((data) => { if (Array.isArray(data?.skills)) setAvailableSkills(data.skills) })
+      .catch(() => {})
+  }, [])
+
+  function set(field: keyof ProjectFormData, value: string | boolean | string[]) {
     setForm((prev) => ({ ...prev, [field]: value }))
+  }
+
+  function toggleSkill(skill: string) {
+    setForm((prev) => ({
+      ...prev,
+      skills: prev.skills.includes(skill)
+        ? prev.skills.filter((s) => s !== skill)
+        : [...prev.skills, skill],
+    }))
   }
 
   async function uploadPdf(): Promise<string | null> {
@@ -198,6 +217,37 @@ export default function ProjectForm({ initial, mode }: { initial?: Partial<Proje
             </label>
           </div>
         </div>
+      </Section>
+
+      {/* Skills */}
+      <Section title="Technical Skills">
+        {availableSkills.length === 0 ? (
+          <p className="text-gray-400 text-xs font-mono">
+            No skills defined yet — add them in{' '}
+            <a href="/admin/about" className="text-accent underline">Edit Career</a>.
+          </p>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {availableSkills.map((skill) => {
+              const checked = form.skills.includes(skill)
+              return (
+                <button
+                  key={skill}
+                  type="button"
+                  onClick={() => toggleSkill(skill)}
+                  className={`font-mono text-xs px-3 py-1.5 border transition-all ${
+                    checked
+                      ? 'bg-accent-light border-accent-border text-accent'
+                      : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'
+                  }`}
+                >
+                  {checked && <span className="mr-1">✓</span>}
+                  {skill}
+                </button>
+              )
+            })}
+          </div>
+        )}
       </Section>
 
       {/* PDF */}

@@ -1,6 +1,23 @@
 import Link from 'next/link'
+import { prisma } from '@/lib/prisma'
+import { DEFAULT_ABOUT_PAGE } from '@/lib/about-page-defaults'
+import type { AboutPageContent } from '@/lib/about-page-defaults'
 
-export default function AboutPage() {
+export const dynamic = 'force-dynamic'
+
+async function getAboutPage(): Promise<AboutPageContent> {
+  try {
+    const record = await prisma.siteContent.findUnique({ where: { key: 'about-page' } })
+    if (record) return JSON.parse(record.value) as AboutPageContent
+  } catch {
+    // DB not yet migrated or key not set — fall through to defaults
+  }
+  return DEFAULT_ABOUT_PAGE
+}
+
+export default async function AboutPage() {
+  const about = await getAboutPage()
+
   return (
     <main className="min-h-screen bg-white pt-14">
       {/* Header */}
@@ -30,23 +47,9 @@ export default function AboutPage() {
             </div>
 
             <div className="space-y-4 text-gray-600 leading-relaxed text-[15px]">
-              <p>
-                I am a Senior Civil and Structural Design Engineer based in the UK, specialising
-                in railway bridge infrastructure. Outside of engineering, I am driven by a broader
-                interest in how organisations work — how teams collaborate, how processes can be
-                improved, and how technology can be applied to real-world problems.
-              </p>
-              <p>
-                This curiosity has led me to take on projects beyond my core engineering role —
-                from building internal tools that improve team efficiency, to developing business
-                plans and leading the adoption of new technology across the organisation.
-              </p>
-              <p>
-                I am always looking for ways to contribute beyond the job description, whether
-                that is through mentoring junior colleagues, improving how the team manages
-                knowledge, or exploring how emerging tools like AI can be applied responsibly
-                in a professional engineering context.
-              </p>
+              {about.bioParagraphs.map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
             </div>
 
             {/* LinkedIn */}
@@ -69,20 +72,14 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* Right — quick facts */}
+          {/* Right — quick facts + interests */}
           <div className="lg:col-span-2 space-y-8">
             <div>
               <h2 className="font-mono text-xs text-gray-400 uppercase tracking-widest mb-5">
                 At a Glance
               </h2>
               <div className="space-y-4">
-                {[
-                  { label: 'Based in', value: 'United Kingdom' },
-                  { label: 'Employer', value: 'AmcoGiffen' },
-                  { label: 'Specialisation', value: 'Railway Bridge Design' },
-                  { label: 'Chartered status', value: 'Working towards CEng' },
-                  { label: 'Career start', value: 'March 2018' },
-                ].map(({ label, value }) => (
+                {about.facts.map(({ label, value }) => (
                   <div key={label} className="flex items-start justify-between border-b border-gray-50 pb-3">
                     <span className="font-mono text-xs text-gray-400 uppercase tracking-widest">{label}</span>
                     <span className="font-mono text-xs text-gray-700 text-right">{value}</span>
@@ -96,15 +93,7 @@ export default function AboutPage() {
                 Interests
               </h2>
               <div className="flex flex-wrap gap-2">
-                {[
-                  'Structural Engineering',
-                  'Process Improvement',
-                  'AI & Technology',
-                  'Business Development',
-                  'Mentoring',
-                  'Surveying',
-                  'Laser Scanning',
-                ].map((interest) => (
+                {about.interests.map((interest) => (
                   <span
                     key={interest}
                     className="font-mono text-xs px-3 py-1.5 bg-gray-50 border border-gray-200 text-gray-600 hover:border-accent-border hover:bg-accent-light hover:text-accent transition-all cursor-default"

@@ -32,10 +32,9 @@ export default function Nav() {
         {/* Logo */}
         <Link
           href="/"
-          className="font-mono text-sm font-medium text-gray-900 tracking-tight flex items-center gap-1.5"
+          className="font-mono text-sm font-medium text-gray-900 tracking-tight"
         >
           Matthew King
-          <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent" aria-hidden="true" />
         </Link>
 
         {/* Desktop links */}

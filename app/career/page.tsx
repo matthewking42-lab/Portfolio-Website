@@ -76,17 +76,19 @@ export default async function CareerPage() {
           <div className="lg:col-span-2 space-y-10">
             {/* Skills */}
             <div>
-              <h2 className="font-mono text-xs text-gray-400 uppercase tracking-widest mb-4">
+              <h2 className="font-mono text-xs text-gray-400 uppercase tracking-widest mb-1">
                 Technical Skills
               </h2>
+              <p className="text-gray-400 text-[11px] mb-4">Click a skill to see related projects</p>
               <div className="flex flex-wrap gap-2">
                 {career.skills.map((skill) => (
-                  <span
+                  <Link
                     key={skill}
-                    className="font-mono text-xs px-3 py-1.5 bg-gray-50 border border-gray-200 text-gray-600 hover:border-accent-border hover:bg-accent-light hover:text-accent transition-all cursor-default"
+                    href={`/projects?skill=${encodeURIComponent(skill)}`}
+                    className="font-mono text-xs px-3 py-1.5 bg-gray-50 border border-gray-200 text-gray-600 hover:border-accent-border hover:bg-accent-light hover:text-accent transition-all"
                   >
                     {skill}
-                  </span>
+                  </Link>
                 ))}
               </div>
             </div>

@@ -85,6 +85,10 @@ export async function POST(request: NextRequest) {
     const isOngoing = row['isongoing']?.toLowerCase() === 'true'
     // default published to true unless explicitly set to 'false'
     const published = row['published']?.toLowerCase() !== 'false'
+    // skills column: pipe-separated list, e.g. "Bridge Design|Eurocodes|AutoCAD"
+    const skills = row['skills']
+      ? row['skills'].split('|').map((s) => s.trim()).filter(Boolean)
+      : []
 
     try {
       await prisma.project.create({
@@ -105,6 +109,7 @@ export async function POST(request: NextRequest) {
           endDate: row['enddate'] || null,
           isOngoing,
           published,
+          skills,
         },
       })
       count++

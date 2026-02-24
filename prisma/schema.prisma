@@ -32,6 +32,7 @@ model Project {
   isOngoing     Boolean  @default(false)
   pdfReport     String?
   published     Boolean  @default(true)
+  skills        String[] @default([])
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

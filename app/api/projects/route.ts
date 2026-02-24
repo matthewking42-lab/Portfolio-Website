@@ -17,6 +17,7 @@ export async function GET() {
       startDate: true,
       endDate: true,
       isOngoing: true,
+      skills: true,
     },
     orderBy: { startDate: 'desc' },
   })
@@ -51,6 +52,7 @@ export async function POST(request: NextRequest) {
       isOngoing: Boolean(body.isOngoing),
       pdfReport: body.pdfReport || null,
       published: Boolean(body.published),
+      skills: Array.isArray(body.skills) ? body.skills : [],
     },
   })
 

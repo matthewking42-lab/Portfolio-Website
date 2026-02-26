@@ -14,8 +14,6 @@ export default async function EditProjectPage({ params }: { params: { id: string
     reference: project.reference ?? '',
     sector: project.sector,
     client: project.client,
-    contractValue: project.contractValue ?? '',
-    designFee: project.designFee ?? '',
     contract: project.contract ?? '',
     description: project.description,
     role: project.role,

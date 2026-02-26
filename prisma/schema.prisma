@@ -19,8 +19,6 @@ model Project {
   reference     String?
   sector        String
   client        String
-  contractValue String?
-  designFee     String?
   contract      String?
   description   String
   role          String
@@ -32,6 +30,7 @@ model Project {
   isOngoing     Boolean  @default(false)
   pdfReport     String?
   published     Boolean  @default(true)
+  pinned        Boolean  @default(false)
   skills        String[] @default([])
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

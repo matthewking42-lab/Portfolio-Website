@@ -97,8 +97,6 @@ export async function POST(request: NextRequest) {
           reference: row['reference'] || null,
           sector: row['sector'],
           client: row['client'],
-          contractValue: row['contractvalue'] || null,
-          designFee: row['designfee'] || null,
           contract: row['contract'] || null,
           description: row['description'],
           role: row['role'],

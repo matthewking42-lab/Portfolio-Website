@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-// GET /api/projects — public list of published projects
-export async function GET() {
+// GET /api/projects — public list of published projects (?pinned=true for hero map)
+export async function GET(request: NextRequest) {
+  const pinned = new URL(request.url).searchParams.get('pinned') === 'true'
+  const where = pinned ? { published: true, pinned: true } : { published: true }
   const projects = await prisma.project.findMany({
-    where: { published: true },
+    where,
     select: {
       id: true,
       title: true,
@@ -39,8 +41,6 @@ export async function POST(request: NextRequest) {
       reference: body.reference || null,
       sector: body.sector,
       client: body.client,
-      contractValue: body.contractValue || null,
-      designFee: body.designFee || null,
       contract: body.contract || null,
       description: body.description,
       role: body.role,

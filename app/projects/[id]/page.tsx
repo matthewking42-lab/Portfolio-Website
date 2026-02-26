@@ -75,8 +75,6 @@ export default async function ProjectPage({ params }: { params: { id: string } }
             <InfoField label="Sector" value={project.sector} />
             <InfoField label="Location" value={project.location} />
             <InfoField label="Role" value={project.role} />
-            <InfoField label="Contract Value" value={project.contractValue || 'Undisclosed'} />
-            {project.designFee && <InfoField label="Design Fee" value={project.designFee} />}
             {project.contract && <InfoField label="Contract" value={project.contract} />}
             <InfoField label="Period" value={period} />
             {project.reference && <InfoField label="Reference" value={project.reference} />}

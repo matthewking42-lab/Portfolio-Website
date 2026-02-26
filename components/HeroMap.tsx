@@ -51,8 +51,12 @@ export default function HeroMap() {
         maxZoom: 19,
       }).addTo(map)
 
-      fetch('/api/projects')
+      // Fetch pinned projects first; fall back to all published if none are pinned
+      fetch('/api/projects?pinned=true')
         .then((r) => r.json())
+        .then((pinned: Project[]) =>
+          pinned.length > 0 ? pinned : fetch('/api/projects').then((r) => r.json())
+        )
         .then((projects: Project[]) => {
           if (!mountedRef.current) return
 

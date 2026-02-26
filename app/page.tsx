@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import HeroMap from "@/components/HeroMap";
+import { DEFAULT_ABOUT } from "@/lib/about-defaults";
 
 // Force dynamic rendering to avoid build-time DB queries (required for Netlify deploy)
 export const dynamic = "force-dynamic";
@@ -26,9 +27,31 @@ function Stat({
 }
 
 export default async function HomePage() {
-  const projectCount = await prisma.project.count({
-    where: { published: true },
-  });
+  const [projectCount, sectorGroups, careerRecord] = await Promise.all([
+    prisma.project.count({ where: { published: true } }),
+    prisma.project.groupBy({
+      by: ['sector'],
+      where: { published: true },
+      _count: { sector: true },
+      orderBy: { _count: { sector: 'desc' } },
+      take: 1,
+    }),
+    prisma.siteContent.findUnique({ where: { key: 'career' } }).catch(() => null),
+  ]);
+
+  const primarySector = sectorGroups[0]?.sector ?? 'Rail';
+
+  let currentRole = DEFAULT_ABOUT.timeline[0]?.role ?? 'Design Engineer';
+  let firstRole = DEFAULT_ABOUT.timeline[DEFAULT_ABOUT.timeline.length - 1]?.role ?? 'Trainee Engineer';
+  if (careerRecord) {
+    try {
+      const career = JSON.parse(careerRecord.value);
+      if (career.timeline?.length > 0) {
+        currentRole = career.timeline[0].role;
+        firstRole = career.timeline[career.timeline.length - 1].role;
+      }
+    } catch { /* keep defaults */ }
+  }
 
   return (
     <main className="min-h-screen flex flex-col bg-white">
@@ -104,11 +127,11 @@ export default async function HomePage() {
               label="Projects"
               sub="Across the UK"
             />
-            <Stat value="Rail" label="Primary sector" sub="Network Rail" />
+            <Stat value={primarySector} label="Primary sector" sub="By project count" />
             <Stat
               value="2018"
               label="Career start"
-              sub="Trainee → Design Engineer"
+              sub={`${firstRole} → ${currentRole}`}
             />
           </div>
         </div>

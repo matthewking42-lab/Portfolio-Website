@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import AdminProjectRow from "./AdminProjectRow";
 import AdminImportButton from "./AdminImportButton";
+import AdminProjectList from "./AdminProjectList";
 
 // Force dynamic rendering to avoid build-time DB queries (required for Netlify deploy)
 export const dynamic = "force-dynamic";
@@ -9,6 +9,17 @@ export const dynamic = "force-dynamic";
 export default async function AdminPage() {
   const projects = await prisma.project.findMany({
     orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      title: true,
+      sector: true,
+      location: true,
+      startDate: true,
+      endDate: true,
+      isOngoing: true,
+      published: true,
+      pinned: true,
+    },
   });
 
   return (
@@ -21,7 +32,6 @@ export default async function AdminPage() {
               <span className="font-mono text-sm font-medium text-gray-900">
                 Matthew King
               </span>
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent" />
             </div>
             <p className="text-gray-400 text-xs font-mono">Admin Dashboard</p>
           </div>
@@ -73,60 +83,25 @@ export default async function AdminPage() {
         </div>
 
         {/* Stat cards */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-4 gap-4 mb-6">
           {[
-            { value: projects.length, label: "Total" },
-            {
-              value: projects.filter((p) => p.published).length,
-              label: "Published",
-            },
-            {
-              value: projects.filter((p) => p.isOngoing).length,
-              label: "Ongoing",
-            },
-          ].map(({ value, label }) => (
+            { value: projects.length, label: "Total", sub: "" },
+            { value: projects.filter((p) => p.published).length, label: "Published", sub: "" },
+            { value: projects.filter((p) => p.isOngoing).length, label: "Ongoing", sub: "" },
+            { value: projects.filter((p) => p.pinned).length, label: "Pinned", sub: "Hero map tour" },
+          ].map(({ value, label, sub }) => (
             <div key={label} className="bg-white border border-gray-200 p-5">
-              <div className="font-mono text-3xl text-accent font-light">
-                {value}
-              </div>
+              <div className="font-mono text-3xl text-accent font-light">{value}</div>
               <div className="font-mono text-xs text-gray-400 uppercase tracking-widest mt-1">
                 {label}
               </div>
+              {sub && <div className="font-mono text-[10px] text-gray-300 mt-0.5">{sub}</div>}
             </div>
           ))}
         </div>
 
-        {/* Table */}
-        <div className="bg-white border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100 bg-gray-50">
-                  {[
-                    "Title",
-                    "Sector",
-                    "Location",
-                    "Period",
-                    "Published",
-                    "Actions",
-                  ].map((h, i) => (
-                    <th
-                      key={h}
-                      className={`px-4 py-3 font-mono text-xs text-gray-400 uppercase tracking-widest font-normal ${i >= 4 ? "text-center" : "text-left"} ${i === 5 ? "text-right" : ""}`}
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {projects.map((project) => (
-                  <AdminProjectRow key={project.id} project={project} />
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        {/* Project list with search */}
+        <AdminProjectList projects={projects} />
       </div>
     </main>
   );

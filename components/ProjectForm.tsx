@@ -12,8 +12,6 @@ export interface ProjectFormData {
   reference: string
   sector: string
   client: string
-  contractValue: string
-  designFee: string
   contract: string
   description: string
   role: string
@@ -33,8 +31,6 @@ const defaultForm: ProjectFormData = {
   reference: '',
   sector: 'Rail',
   client: '',
-  contractValue: '',
-  designFee: '',
   contract: '',
   description: '',
   role: 'Design Engineer',
@@ -166,9 +162,6 @@ export default function ProjectForm({ initial, mode }: { initial?: Partial<Proje
           </Field>
           <Field label="Client *">
             <input required className={inputCls} value={form.client} onChange={(e) => set('client', e.target.value)} placeholder="Client name" />
-          </Field>
-          <Field label="Contract Value">
-            <input className={inputCls} value={form.contractValue} onChange={(e) => set('contractValue', e.target.value)} placeholder="e.g. £430k" />
           </Field>
           <Field label="Role *">
             <input required className={inputCls} value={form.role} onChange={(e) => set('role', e.target.value)} placeholder="Your role on project" />

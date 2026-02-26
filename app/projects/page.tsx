@@ -21,6 +21,7 @@ export default function ProjectsPage() {
   const [focusId, setFocusId] = useState<string | undefined>()
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [skillFilter, setSkillFilter] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
 
   // On mobile, start with sidebar closed so the map is visible
   useEffect(() => {
@@ -55,7 +56,10 @@ export default function ProjectsPage() {
   const visibleProjects = projects.filter(
     (p) =>
       selectedSectors.includes(p.sector) &&
-      (!skillFilter || p.skills.includes(skillFilter))
+      (!skillFilter || p.skills.includes(skillFilter)) &&
+      (!searchQuery || p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.client.toLowerCase().includes(searchQuery.toLowerCase()))
   )
 
   return (
@@ -98,6 +102,23 @@ export default function ProjectsPage() {
             >
               ×
             </button>
+          </div>
+
+          {/* Search */}
+          <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-2">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-300 flex-shrink-0">
+              <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" strokeLinecap="round" />
+            </svg>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search projects…"
+              className="flex-1 text-xs font-mono text-gray-700 placeholder-gray-300 outline-none bg-transparent"
+            />
+            {searchQuery && (
+              <button onClick={() => setSearchQuery('')} className="text-gray-300 hover:text-gray-500 transition-colors text-lg leading-none">×</button>
+            )}
           </div>
 
           {/* Active skill filter chip */}
@@ -209,7 +230,7 @@ export default function ProjectsPage() {
 
         {!loading && (
           <MapClient
-            projects={projects}
+            projects={visibleProjects}
             selectedSectors={selectedSectors}
             focusId={focusId}
             skillFilter={skillFilter}

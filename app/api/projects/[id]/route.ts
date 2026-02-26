@@ -34,8 +34,6 @@ export async function PUT(
       reference: body.reference || null,
       sector: body.sector,
       client: body.client,
-      contractValue: body.contractValue || null,
-      designFee: body.designFee || null,
       contract: body.contract || null,
       description: body.description,
       role: body.role,

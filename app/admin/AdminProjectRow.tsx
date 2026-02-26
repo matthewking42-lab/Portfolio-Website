@@ -13,11 +13,13 @@ interface Project {
   endDate: string | null
   isOngoing: boolean
   published: boolean
+  pinned: boolean
 }
 
 export default function AdminProjectRow({ project }: { project: Project }) {
   const router = useRouter()
   const [published, setPublished] = useState(project.published)
+  const [pinned, setPinned] = useState(project.pinned)
   const [deleting, setDeleting] = useState(false)
 
   const period = project.isOngoing
@@ -37,6 +39,17 @@ export default function AdminProjectRow({ project }: { project: Project }) {
     router.refresh()
   }
 
+  async function togglePinned() {
+    const next = !pinned
+    setPinned(next)
+    await fetch(`/api/projects/${project.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pinned: next }),
+    })
+    router.refresh()
+  }
+
   async function handleDelete() {
     if (!confirm(`Delete "${project.title}"? This cannot be undone.`)) return
     setDeleting(true)
@@ -51,7 +64,18 @@ export default function AdminProjectRow({ project }: { project: Project }) {
   return (
     <tr className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
       <td className="px-4 py-3">
-        <div className="text-gray-900 text-sm font-medium leading-snug max-w-xs">{project.title}</div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={togglePinned}
+            title={pinned ? 'Pinned to hero map — click to unpin' : 'Click to pin to hero map'}
+            className={`flex-shrink-0 transition-colors ${pinned ? 'text-accent' : 'text-gray-200 hover:text-gray-400'}`}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill={pinned ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+          </button>
+          <div className="text-gray-900 text-sm font-medium leading-snug max-w-xs">{project.title}</div>
+        </div>
       </td>
       <td className="px-4 py-3">
         <span className={`font-mono text-xs px-2 py-0.5 ${sectorCls}`}>{project.sector}</span>
